@@ -4,6 +4,8 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
+import { logout } from '../actions';
+
 const menuItems = [
   { name: 'Painel', href: '/admin' },
   { name: 'Usuários', href: '/admin/users' },
@@ -93,6 +95,16 @@ export default function NavMenu() {
                   </Link>
                 </li>
               ))}
+              <li className="mt-8">
+                <form action={logout}>
+                  <button
+                    type="submit"
+                    className="w-full text-left block p-2 rounded-md hover:bg-gray-800 transition-colors hover:cursor-pointer"
+                  >
+                    Sair
+                  </button>
+                </form>
+              </li>
             </ul>
           </nav>
         </div>

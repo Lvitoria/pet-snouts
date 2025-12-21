@@ -5,9 +5,9 @@ export default  async function AdminPage() {
   const userName = cookieStore.get('userName')?.value || 'Usuário';
 
   return (
-    <div>
+    <div className='flex min-h-screen flex-col items-center bg-zinc-50'>
       <h1 className="text-3xl font-bold text-gray-800">Painel de Administração</h1>
-      <p className="mt-2 text-gray-600">Seja bem-vindo, {userName}!</p>
+      <p className="text-gray-600">Seja bem-vindo, {userName}!</p>
     </div>
   );
 }
