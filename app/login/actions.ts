@@ -1,6 +1,8 @@
 
 'use server';
 
+import { cookies } from 'next/headers';
+
 export async function login(prevState: any, formData: FormData) {
   const email = formData.get('email') as string;
   const password = formData.get('password') as string;
@@ -16,16 +18,29 @@ export async function login(prevState: any, formData: FormData) {
 
     if (res.ok) {
       const data = await res.json();
-      // On a real app, you'd set a cookie here, not return the token
-      return { success: true, message: 'Login bem-sucedido!', token: data.access_token };
-    } else {
-      const errorData = await res.json();
-      return { success: false, message: errorData.message || 'Falha no login.' };
-    }
+      const cookiesStore = await cookies();
+      cookiesStore.set('token', data.access_token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        path: '/',
+      });
+      if (data.name) {
+       cookiesStore.set('userName', data.name, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === 'production',
+          path: '/',
+        });
+      }
+      return { success: true, redirect: true, message: 'Login bem-sucedido.' };
+    } 
+    const errorData = await res.json();
+    console.error('Login failed:', errorData);  
+    return { success: false, redirect: false, message: errorData.message || 'Falha no login.' };
   } catch (err) {
+    console.error('Login error:', err);
     if (err instanceof Error) {
-      return { success: false, message: 'Ocorreu um erro de rede.' };
+      return { success: false, redirect: false, message: 'Ocorreu um erro de rede.' };
     }
-    return { success: false, message: 'Ocorreu um erro desconhecido.' };
+    return { success: false, redirect: false, message: 'Ocorreu um erro desconhecido.' };
   }
 }

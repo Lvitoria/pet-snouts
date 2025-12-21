@@ -3,11 +3,12 @@
 import { useFormState, useFormStatus } from 'react-dom';
 import { login } from '@/app/login/actions';
 import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
 const initialState = {
   message: '',
   success: false,
-  token: null,
+  redirect: false,
 };
 
 function SubmitButton() {
@@ -27,18 +28,14 @@ function SubmitButton() {
 
 export default function LoginForm() {
   const [state, formAction] = useFormState(login, initialState);
+  const router = useRouter();
 
   useEffect(() => {
-    if (state.success) {
-      alert('Login bem-sucedido!');
-      // Here you would typically store the token and redirect the user
-      // For example:
-      // localStorage.setItem('token', state.token);
-      // window.location.href = '/dashboard';
-      console.log('Token:', state.token);
+    if (state.success && state.redirect) {
+      console.log(state.message);
+      router.push('/admin');
     }
-  }, [state]);
-
+  }, [state, router]);
 
   return (
     <div className="w-full max-w-md p-8 space-y-8 bg-black rounded-lg shadow-md z-10">
