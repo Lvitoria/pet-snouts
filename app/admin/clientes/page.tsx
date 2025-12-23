@@ -12,6 +12,8 @@ type Client = {
 };
 
 export default async function ClientesTable() {
+  const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+  await delay(100000); // Simulate a 10 second delay
   const clients: Client[] = await getClients();
 
   return (
