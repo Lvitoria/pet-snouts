@@ -117,7 +117,13 @@ export async function updateClient(id: number, prevState: State, formData: FormD
   redirect("/admin/clientes");
 }
 
-export async function deleteClient(id: number) {
+export async function deleteClient(prevState: { message?: string }, formData: FormData) {
+  const id = Number(formData.get('idClientes'));
+
+  if (isNaN(id)) {
+    return { message: "ID inválido." };
+  }
+
   try {
     const response = await apiFetch(`/clientes/${id}`, {
       method: "DELETE",
@@ -132,4 +138,5 @@ export async function deleteClient(id: number) {
   }
 
   revalidatePath("/admin/clientes");
+  return { message: null };
 }
