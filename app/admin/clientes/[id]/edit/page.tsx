@@ -2,8 +2,9 @@ import { getClientById } from '../../actions';
 import EditClientForm from '../../components/edit-form';
 import { notFound } from 'next/navigation';
 
-export default async function EditClientePage({ params }: { params: { id: string } }) {
-  const id = params.id;
+export default async function EditClientePage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  console.log('id', id);
   const client = await getClientById(id);
 
   if (!client) {
