@@ -8,7 +8,8 @@ import { logout } from '../actions';
 
 const menuItems = [
   { name: 'Painel', href: '/admin' },
-  { name: 'Clientes', href: '/admin/clientes' }
+  { name: 'Clientes', href: '/admin/clientes' },
+  { name: 'Animais', href: '/admin/animais' }
   // Adicione mais itens de menu aqui
 ];
 

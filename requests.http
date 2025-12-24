@@ -73,7 +73,7 @@ Authorization: Bearer {{token}}
   "raca": "Labrador",
   "porte": "Grande",
   "status_vida": true,
-  "clienteIds": [3]
+  "clienteIds": [1]
 }
 
 ### Get all animais
