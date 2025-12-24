@@ -6,7 +6,7 @@ import { createClient, type State } from '../actions';
 
 export default function CreateClientForm() {
   const initialState: State = { message: null, errors: {} };
-  const [state, dispatch] = useFormState(createClient, initialState);
+  const [state, dispatch] = useFormState<State, FormData>(createClient, initialState);
 
   return (
     <form action={dispatch}>
@@ -20,6 +20,7 @@ export default function CreateClientForm() {
             id="nome"
             name="nome"
             type="text"
+            defaultValue={state.data?.nome || ''}
             placeholder="Digite o nome do cliente"
             className="block w-full rounded-md border border-gray-200 py-2 px-3 text-sm outline-2 placeholder:text-gray-500"
             aria-describedby="nome-error"
@@ -43,6 +44,7 @@ export default function CreateClientForm() {
             id="documento"
             name="documento"
             type="text"
+            defaultValue={state.data?.documento || ''}
             placeholder="Digite o documento"
             className="block w-full rounded-md border border-gray-200 py-2 px-3 text-sm outline-2 placeholder:text-gray-500"
             aria-describedby="documento-error"
@@ -66,6 +68,7 @@ export default function CreateClientForm() {
             id="data_nasc"
             name="data_nasc"
             type="date"
+            defaultValue={state.data?.data_nasc ? new Date(state.data.data_nasc).toISOString().split('T')[0] : ''}
             className="block w-full rounded-md border border-gray-200 py-2 px-3 text-sm outline-2 placeholder:text-gray-500"
             aria-describedby="data_nasc-error"
           />

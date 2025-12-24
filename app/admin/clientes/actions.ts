@@ -14,12 +14,29 @@ function processFormData(formData: FormData) {
   return data;
 }
 
+function getFieldErrors(issues: z.ZodIssue[]) {
+  const fieldErrors: Record<string, string[]> = {};
+  issues.forEach((issue) => {
+    const path = issue.path.join('.');
+    if (!fieldErrors[path]) {
+      fieldErrors[path] = [];
+    }
+    fieldErrors[path].push(issue.message);
+  });
+  return fieldErrors;
+}
+
 // Esquema de validação com Zod
 const ClientSchema = z.object({
   id: z.coerce.number().optional(),
-  nome: z.string().min(3, { message: 'O nome precisa ter no mínimo 3 caracteres.' }),
+  nome: z.string({ message: 'O nome é obrigatório.' })
+        .min(3, { message: 'O nome precisa ter no mínimo 3 caracteres.' })
+        .max(255, { message: 'O nome não pode ter mais de 255 caracteres.' }),
   documento: z.union([
-    z.string().min(11, { message: 'Por favor, insira um número de documento válido.' }),
+    z.string()
+        .transform(val => val === '' ? null : val)
+        .pipe(z.string().min(11, { message: 'Por favor, insira um número de documento válido.' })
+        .pipe(z.string().max(14, { message: 'O documento não pode ter mais de 14 caracteres.' }))),
     z.null()
   ]).optional(),
   data_nasc: z.union([z.string(), z.null()]).optional(),
@@ -33,6 +50,7 @@ export type State = {
     data_nasc?: string[];
   };
   message?: string | null;
+  data?: Record<string, any>;
 };
 
 // Funções de busca
@@ -72,9 +90,11 @@ export async function createClient(prevState: State, formData: FormData) {
   const validatedFields = CreateClient.safeParse(processedData);
 
   if (!validatedFields.success) {
+    const fieldErrors = getFieldErrors(validatedFields.error.issues);
     return {
-      errors: validatedFields.error.flatten().fieldErrors,
+      errors: fieldErrors,
       message: 'Erro de validação. Por favor, corrija os campos destacados.',
+      data: processedData
     };
   }
   
@@ -89,13 +109,19 @@ export async function createClient(prevState: State, formData: FormData) {
 
     if (!response.ok) {
         const errorData = await response.json().catch(() => ({ message: 'Falha ao criar cliente.' }));
-        return { message: `Erro da API: ${errorData.message}` };
+        return { 
+          message: `Erro da API: ${errorData.message}`,
+          data: processedData
+        };
     }
   } catch (error) {
-    return { message: "Erro de rede: Não foi possível conectar ao servidor." };
+    return { 
+      message: "Erro de rede: Não foi possível conectar ao servidor.",
+      data: processedData
+    };
   }
 
-  revalidatePath("/admin/clientes");
+  revalidatePath("/admin/clientes"); // Revalida a página para atualizar a lista de clientes
   redirect("/admin/clientes");
 }
 
@@ -106,9 +132,11 @@ export async function updateClient(id: number, prevState: State, formData: FormD
   const validatedFields = UpdateClient.safeParse(processedData);
 
   if (!validatedFields.success) {
+    const fieldErrors = getFieldErrors(validatedFields.error.issues);
     return {
-      errors: validatedFields.error.flatten().fieldErrors,
+      errors: fieldErrors,
       message: 'Erro de validação. Por favor, corrija os campos destacados.',
+      data: processedData
     };
   }
 
@@ -123,13 +151,13 @@ export async function updateClient(id: number, prevState: State, formData: FormD
 
     if (!response.ok) {
         const errorData = await response.json().catch(() => ({ message: 'Falha ao atualizar cliente.' }));
-        return { message: `Erro da API: ${errorData.message}` };
+        return { message: `Erro da API: ${errorData.message}`, data: processedData };
     }
   } catch (error) {
-    return { message: "Erro de rede: Não foi possível conectar ao servidor." };
+    return { message: "Erro de rede: Não foi possível conectar ao servidor.", data: processedData };
   }
 
-  revalidatePath("/admin/clientes");
+  revalidatePath("/admin/clientes"); // Revalida a página para atualizar a lista de clientes
   redirect("/admin/clientes");
 }
 
@@ -153,6 +181,6 @@ export async function deleteClient(prevState: { message?: string }, formData: Fo
     return { message: "Erro de rede: Não foi possível conectar ao servidor." };
   }
 
-  revalidatePath("/admin/clientes");
+  revalidatePath("/admin/clientes"); // Revalida a página para atualizar a lista de clientes
   return { message: null };
 }
