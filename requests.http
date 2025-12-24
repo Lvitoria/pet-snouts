@@ -1,0 +1,313 @@
+### Base URL
+@baseUrl = http://localhost:3001
+
+### Hello route
+GET {{baseUrl}}/
+
+### Login
+# @name login
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "teste@gmail.com",
+  "password": "123456"
+}
+
+### Store the auth token from the login response
+@token = {{login.response.body.access_token}}
+
+###
+### Clientes CRUD (Authentication Required)
+###
+
+### Create a new cliente
+# Note: Adjust the body as needed.
+POST {{baseUrl}}/clientes
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "nome": "Cliente Exemplo",
+  "documento": "123456789",
+  "data_nasc": "1990-01-15T00:00:00",
+  "Usuarios_internos_idUsuarios_internos": 1
+}
+
+### Get all clientes
+GET {{baseUrl}}/clientes
+Authorization: Bearer {{token}}
+
+### Get a single cliente by ID
+# Note: Change the '1' to the ID of the cliente you want to fetch.
+GET {{baseUrl}}/clientes/3
+Authorization: Bearer {{token}}
+
+### Update a cliente by ID
+# Note: Change the '1' and adjust the body as needed.
+PATCH {{baseUrl}}/clientes/1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "nome": "Cliente Exemplo Atualizado"
+}
+
+### Delete a cliente by ID
+# Note: Change the '1' to the ID of the cliente you want to delete.
+DELETE {{baseUrl}}/clientes/3
+Authorization: Bearer {{token}}
+
+###
+### Animais CRUD (Authentication Required)
+###
+
+### Create a new animal
+# Note: Ensure the client(s) specified in clienteIds exist.
+POST {{baseUrl}}/animais
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "nome": "Cachorro Teste",
+  "raca": "Labrador",
+  "porte": "Grande",
+  "status_vida": true,
+  "clienteIds": [3]
+}
+
+### Get all animais
+GET {{baseUrl}}/animais
+Authorization: Bearer {{token}}
+
+### Get a single animal by ID
+# Note: Change the '1' to the ID of the animal you want to fetch.
+GET {{baseUrl}}/animais/1
+Authorization: Bearer {{token}}
+
+### Update an animal by ID
+# Note: Change the '1' and adjust the body as needed.
+PATCH {{baseUrl}}/animais/1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "nome": "Cachorro Atualizado",
+  "porte": "Médio"
+}
+
+### Delete an animal by ID
+# Note: Change the '1' to the ID of the animal you want to delete.
+DELETE {{baseUrl}}/animais/1
+Authorization: Bearer {{token}}
+
+###
+### Tosas CRUD (Authentication Required)
+###
+
+### Create a new tosa (Grooming appointment)
+# Note: Ensure Animais_tem_clientes_id_animais_tem_clientes exists.
+POST {{baseUrl}}/tosas
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "data_hora_inicio": "2025-12-20T10:00:00",
+  "data_hora_fim": "2025-12-20T11:00:00",
+  "atividade": "Banho e Tosa",
+  "obs": "Pelagem longa",
+  "Animais_tem_clientes_id_animais_tem_clientes": 1
+}
+
+### Get all tosas
+GET {{baseUrl}}/tosas
+Authorization: Bearer {{token}}
+
+### Get tosas by agenda (date range)
+# Example: Fetch appointments for the whole day of 2025-12-20
+GET {{baseUrl}}/tosas/agenda?start=2025-12-20T00:00:00&end=2025-12-20T23:59:59
+Authorization: Bearer {{token}}
+
+### Get a single tosa by ID
+# Note: Change the '1' to the ID of the tosa you want to fetch.
+GET {{baseUrl}}/tosas/1
+Authorization: Bearer {{token}}
+
+### Update a tosa by ID
+# Note: Change the '1' and adjust the body as needed.
+PATCH {{baseUrl}}/tosas/1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "atividade": "Somente Banho",
+  "obs": "Pelagem curta"
+}
+
+### Delete a tosa by ID
+# Note: Change the '1' to the ID of the tosa you want to delete.
+DELETE {{baseUrl}}/tosas/1
+Authorization: Bearer {{token}}
+
+###
+### TipoProduto CRUD (Authentication Required)
+###
+
+### Create a new tipo-produto
+POST {{baseUrl}}/tipo-produto
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "nome": "Ração"
+}
+
+### Get all tipo-produto
+GET {{baseUrl}}/tipo-produto
+Authorization: Bearer {{token}}
+
+### Get a single tipo-produto by ID
+# Note: Change the '1' to the ID of the tipo-produto you want to fetch.
+GET {{baseUrl}}/tipo-produto/1
+Authorization: Bearer {{token}}
+
+### Update a tipo-produto by ID
+# Note: Change the '1' and adjust the body as needed.
+PATCH {{baseUrl}}/tipo-produto/1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "nome": "raçao"
+}
+
+### Delete a tipo-produto by ID
+# Note: Change the '1' to the ID of the tipo-produto you want to delete.
+DELETE {{baseUrl}}/tipo-produto/1
+Authorization: Bearer {{token}}
+
+###
+### Produto CRUD (Authentication Required)
+###
+
+### Create a new produto
+POST {{baseUrl}}/produtos
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "nome_produto": "Ração para cães",
+  "cod_barras": 1234567890,
+  "quantidade": 10,
+  "preco": 50.00,
+  "unidade_medida": "kg",
+  "Tipo_produto_idTipo_produto": 2
+}
+
+### Get all produtos
+GET {{baseUrl}}/produtos
+Authorization: Bearer {{token}}
+
+### Get a single produto by ID
+# Note: Change the '1' to the ID of the produto you want to fetch.
+GET {{baseUrl}}/produtos/4
+Authorization: Bearer {{token}}
+
+### Update a produto by ID
+# Note: Change the '1' and adjust the body as needed.
+PATCH {{baseUrl}}/produtos/1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "preco": 55.50
+}
+
+### Delete a produto by ID
+# Note: Change the '1' to the ID of the produto you want to delete.
+DELETE {{baseUrl}}/produtos/1
+Authorization: Bearer {{token}}
+
+###
+### Pedido CRUD (Authentication Required)
+###
+
+### Create a new pedido
+POST {{baseUrl}}/pedidos
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "valor": 100.00,
+  "clientes_idClientes": 1,
+  "produtos": [
+    {
+      "produtoId": 5,
+      "quantidade": 2
+    }
+  ]
+}
+
+### Get all pedidos
+GET {{baseUrl}}/pedidos
+Authorization: Bearer {{token}}
+
+### Get a single pedido by ID
+# Note: Change the '1' to the ID of the pedido you want to fetch.
+GET {{baseUrl}}/pedidos/2
+Authorization: Bearer {{token}}
+
+### Delete a pedido by ID
+# Note: Change the '1' to the ID of the pedido you want to delete.
+DELETE {{baseUrl}}/pedidos/1
+Authorization: Bearer {{token}}
+
+###
+### Pagamento CRUD (Authentication Required)
+###
+
+### Create a new pagamento
+POST {{baseUrl}}/pagamentos
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "valor": 100.00,
+  "metodo_pgto": "Cartão de Crédito",
+  "status": "pago",
+  "clientes_idClientes": 1
+}
+
+### Get all pagamentos
+GET {{baseUrl}}/pagamentos
+Authorization: Bearer {{token}}
+
+### Get a single pagamento by ID
+# Note: Change the '1' to the ID of the pagamento you want to fetch.
+GET {{baseUrl}}/pagamentos/1
+Authorization: Bearer {{token}}
+
+### Update a pagamento by ID
+# Note: Change the '1' and adjust the body as needed.
+PATCH {{baseUrl}}/pagamentos/1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "status": "estornado"
+}
+
+### Update only the status of a pagamento by ID
+# Note: Change the '1' and adjust the body as needed.
+PATCH {{baseUrl}}/pagamentos/2
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "status": "cancelado"
+}
+
+### Delete a pagamento by ID
+# Note: Change the '1' to the ID of the pagamento you want to delete.
+DELETE {{baseUrl}}/pagamentos/1
+Authorization: Bearer {{token}}
