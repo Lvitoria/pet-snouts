@@ -6,10 +6,43 @@ import { usePathname } from 'next/navigation';
 
 import { logout } from '../actions';
 
+// Componentes de ícones
+function DashboardIcon() {
+  return (
+    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+    </svg>
+  );
+}
+
+function ClientsIcon() {
+  return (
+    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+    </svg>
+  );
+}
+
+function AnimalsIcon() {
+  return (
+    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+    </svg>
+  );
+}
+
+function LogoutIcon() {
+  return (
+    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+    </svg>
+  );
+}
+
 const menuItems = [
-  { name: 'Painel', href: '/admin' },
-  { name: 'Clientes', href: '/admin/clientes' },
-  { name: 'Animais', href: '/admin/animais' }
+  { name: 'Painel', href: '/admin', icon: DashboardIcon },
+  { name: 'Clientes', href: '/admin/clientes', icon: ClientsIcon },
+  { name: 'Animais', href: '/admin/animais', icon: AnimalsIcon }
   // Adicione mais itens de menu aqui
 ];
 
@@ -80,28 +113,33 @@ export default function NavMenu() {
             </div>
             <nav>
             <ul>
-              {menuItems.map((item) => (
-                <li key={item.name} className="mb-2">
-                  <Link href={item.href}>
-                    <span
-                      onClick={() => setIsOpen(false)}
-                      className={`block p-2 rounded-md transition-colors ${
-                        pathname === item.href
-                          ? 'bg-gray-700'
-                          : 'hover:bg-gray-800'
-                      }`}
-                    >
-                      {item.name}
-                    </span>
-                  </Link>
-                </li>
-              ))}
+              {menuItems.map((item) => {
+                const Icon = item.icon;
+                return (
+                  <li key={item.name} className="mb-2">
+                    <Link href={item.href}>
+                      <span
+                        onClick={() => setIsOpen(false)}
+                        className={`flex items-center gap-3 p-2 rounded-md transition-colors ${
+                          pathname === item.href
+                            ? 'bg-gray-700'
+                            : 'hover:bg-gray-800'
+                        }`}
+                      >
+                        <Icon />
+                        {item.name}
+                      </span>
+                    </Link>
+                  </li>
+                );
+              })}
               <li className="mt-8">
                 <form action={logout}>
                   <button
                     type="submit"
-                    className="w-full text-left block p-2 rounded-md hover:bg-gray-800 transition-colors hover:cursor-pointer"
+                    className="w-full text-left flex items-center gap-3 p-2 rounded-md hover:bg-gray-800 transition-colors hover:cursor-pointer"
                   >
+                    <LogoutIcon />
                     Sair
                   </button>
                 </form>
