@@ -1,7 +1,6 @@
 'use client';
 
-import { useFormState, useFormStatus } from 'react-dom';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useActionState } from 'react';
 
 // Define o tipo para o estado do formulário, esperando uma mensagem opcional.
 type FormState = {
@@ -9,8 +8,7 @@ type FormState = {
 };
 
 // Botão de confirmação que exibe estado de carregamento.
-function ConfirmButton() {
-  const { pending } = useFormStatus();
+function ConfirmButton({ pending }: { pending: boolean }) {
 
   return (
     <button 
@@ -34,7 +32,7 @@ interface DeleteFormButtonProps {
 export default function DeleteFormButton({ id, idFieldName, action }: DeleteFormButtonProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const initialState: FormState = { message: null };
-  const [formState, dispatch] = useFormState(action, initialState);
+  const [formState, dispatch, pending] = useActionState(action, initialState);
 
   // Efeito para lidar com o resultado da ação do formulário.
   useEffect(() => {
@@ -93,7 +91,7 @@ export default function DeleteFormButton({ id, idFieldName, action }: DeleteForm
               </button>
               <form action={dispatch}>
                 <input type="hidden" name={idFieldName} value={id} />
-                <ConfirmButton />
+                <ConfirmButton  pending={pending || false}/>
               </form>
             </div>
           </div>

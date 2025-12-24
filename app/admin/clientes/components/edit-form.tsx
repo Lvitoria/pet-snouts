@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useFormState } from 'react-dom';
+import { useActionState } from 'react';
 import { updateClient, type State } from '../actions';
 
 // Define the type for the client prop
@@ -14,15 +14,14 @@ type Client = {
 
 export default function EditClientForm({ client }: { client: Client }) {
   const initialState: State = { message: null, errors: {} };
-  // We need to bind the client's ID to the server action
-  const updateClientWithId = updateClient.bind(null, client.idClientes);
-  const [state, dispatch] = useFormState(updateClientWithId, initialState);
+  const [state, dispatch, pending] = useActionState<State, FormData>(updateClient, initialState);
   
   // The date from the API is a full ISO string, we need to format it to YYYY-MM-DD for the input
   const dateForInput = client.data_nasc ? new Date(client.data_nasc).toISOString().split('T')[0] : '';
 
   return (
     <form action={dispatch}>
+      <input type="hidden" name="idClientes" value={client.idClientes} />
       <div className="rounded-md bg-gray-50 p-4 md:p-6">
         {/* Client Name */}
         <div className="mb-4">
@@ -106,8 +105,11 @@ export default function EditClientForm({ client }: { client: Client }) {
         >
           Cancelar
         </Link>
-        <button type="submit" className="flex h-10 items-center rounded-lg bg-blue-600 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-500">
-          Atualizar Cliente
+        <button type="submit" 
+                className={`flex h-10 items-center rounded-lg bg-blue-600 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-500 ${pending ? 'bg-gray-400 cursor-not-allowed' : ''}`} 
+                disabled={pending || false}
+        >
+          {pending ? 'Atualizando...' : 'Atualizar Cliente'}
         </button>
       </div>
     </form>

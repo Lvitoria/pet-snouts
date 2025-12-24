@@ -127,7 +127,13 @@ export async function createClient(prevState: State, formData: FormData) {
 
 const UpdateClient = ClientSchema.omit({ id: true, Usuarios_internos_idUsuarios_internos: true });
 
-export async function updateClient(id: number, prevState: State, formData: FormData) {
+export async function updateClient(prevState: State, formData: FormData) {
+  const id = Number(formData.get('idClientes'));
+
+  if (isNaN(id)) {
+    return { message: "ID inválido." };
+  }
+
   const processedData = processFormData(formData);
   const validatedFields = UpdateClient.safeParse(processedData);
 

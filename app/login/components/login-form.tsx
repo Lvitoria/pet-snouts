@@ -1,6 +1,6 @@
 "use client";
 
-import { useFormState, useFormStatus } from 'react-dom';
+import { useActionState } from 'react';
 import { login } from '@/app/login/actions';
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
@@ -11,8 +11,7 @@ const initialState = {
   redirect: false,
 };
 
-function SubmitButton() {
-  const { pending } = useFormStatus();
+function SubmitButton({ pending }: { pending: boolean }) {
 
   return (
     <button
@@ -27,7 +26,7 @@ function SubmitButton() {
 }
 
 export default function LoginForm() {
-  const [state, formAction] = useFormState(login, initialState);
+  const [state, formAction, pending] = useActionState(login, initialState);
   const router = useRouter();
 
   useEffect(() => {
@@ -82,7 +81,7 @@ export default function LoginForm() {
         )}
        
         <div>
-          <SubmitButton />
+          <SubmitButton pending={pending || false} />
         </div>
       </form>
     </div>

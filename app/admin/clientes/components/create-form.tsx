@@ -1,12 +1,12 @@
 'use client';
 
 import Link from 'next/link';
-import { useFormState } from 'react-dom';
+import { useActionState } from 'react';
 import { createClient, type State } from '../actions';
 
 export default function CreateClientForm() {
   const initialState: State = { message: null, errors: {} };
-  const [state, dispatch] = useFormState<State, FormData>(createClient, initialState);
+  const [state, dispatch, pending] = useActionState<State, FormData>(createClient, initialState);
 
   return (
     <form action={dispatch}>
@@ -101,8 +101,11 @@ export default function CreateClientForm() {
         >
           Cancelar
         </Link>
-        <button type="submit" className="flex h-10 items-center rounded-lg bg-blue-600 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-500">
-          Criar Cliente
+        <button type="submit" 
+                className={`flex h-10 items-center rounded-lg bg-blue-600 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-500 ${pending ? 'bg-gray-400 cursor-not-allowed' : ''}`} 
+                disabled={pending || false}
+        >
+          {pending ? 'Criando...' : 'Criar Cliente'}
         </button>
       </div>
     </form>
