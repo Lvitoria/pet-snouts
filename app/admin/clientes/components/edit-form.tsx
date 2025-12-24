@@ -8,8 +8,8 @@ import { updateClient, type State } from '../actions';
 type Client = {
     idClientes: number;
     nome: string;
-    documento: number;
-    data_nasc: string;
+    documento: number | null;
+    data_nasc: string | null;
 };
 
 export default function EditClientForm({ client }: { client: Client }) {
@@ -19,7 +19,7 @@ export default function EditClientForm({ client }: { client: Client }) {
   const [state, dispatch] = useFormState(updateClientWithId, initialState);
   
   // The date from the API is a full ISO string, we need to format it to YYYY-MM-DD for the input
-  const dateForInput = new Date(client.data_nasc).toISOString().split('T')[0];
+  const dateForInput = client.data_nasc ? new Date(client.data_nasc).toISOString().split('T')[0] : '';
 
   return (
     <form action={dispatch}>
@@ -56,7 +56,7 @@ export default function EditClientForm({ client }: { client: Client }) {
             id="documento"
             name="documento"
             type="number"
-            defaultValue={client.documento}
+            defaultValue={client.documento || ''}
             className="block w-full rounded-md border border-gray-200 py-2 px-3 text-sm outline-2 placeholder:text-gray-500"
             aria-describedby="documento-error"
           />

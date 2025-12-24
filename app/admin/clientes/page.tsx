@@ -7,8 +7,8 @@ import ListTable from '../../components/ListTable';
 type Client = {
   idClientes: number;
   nome: string;
-  documento: number;
-  data_nasc: string;
+  documento: number | null;
+  data_nasc: string | null;
 };
 
 export default async function ClientesTable() {
@@ -45,10 +45,10 @@ export default async function ClientesTable() {
               {client.nome}
             </td>
             <td className="whitespace-nowrap bg-white px-3 py-5 text-sm">
-              {client.documento}
+              {client.documento || '-'}
             </td>
             <td className="whitespace-nowrap bg-white px-3 py-5 text-sm">
-              {new Date(client.data_nasc).toLocaleDateString('pt-BR')}
+              {client.data_nasc ? new Date(client.data_nasc).toLocaleDateString('pt-BR') : '-'}
             </td>
             <td className="whitespace-nowrap bg-white py-3 pl-6 pr-3">
               <div className="flex justify-end gap-3">
