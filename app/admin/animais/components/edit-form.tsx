@@ -1,9 +1,8 @@
 'use client';
 
 import Link from 'next/link';
-import { useFormState } from 'react-dom';
+import { useActionState, useState } from 'react';
 import { updateAnimal, type State } from '../actions';
-import { useState } from 'react';
 
 type Client = {
   idClientes: number;
@@ -22,11 +21,13 @@ type Animal = {
 };
 
 export default function EditAnimalForm({ animal, clients }: { animal: Animal, clients: Client[] }) {
-  const initialState: State = { message: null, errors: {} };
+  const initialState: State = { message: null, errors: {}, data: null };
   const updateAnimalWithId = updateAnimal.bind(null, animal.idAnimais);
-  const [state, dispatch] = useFormState(updateAnimalWithId, initialState);
+  const [state, dispatch, pending] = useActionState<State, FormData>(updateAnimalWithId, initialState);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedClients, setSelectedClients] = useState<Client[]>(animal.Animais_tem_clientes.map(atc => atc.clientes));
+  const [statusVida, setStatusVida] = useState(animal.status_vida === true);
+
 
   const filteredClients = searchTerm
     ? clients.filter(client =>
@@ -48,7 +49,6 @@ export default function EditAnimalForm({ animal, clients }: { animal: Animal, cl
 
   return (
     <form action={dispatch}>
-      <input type="hidden" name="idAnimais" value={animal.idAnimais} />
       <div className="rounded-md bg-gray-50 p-4 md:p-6">
         {/* Animal Name */}
         <div className="mb-4">
@@ -59,7 +59,8 @@ export default function EditAnimalForm({ animal, clients }: { animal: Animal, cl
             id="nome"
             name="nome"
             type="text"
-            defaultValue={animal.nome}
+            defaultValue={state.data?.nome || animal.nome}
+            placeholder="Digite o nome do animal"
             className="block w-full rounded-md border border-gray-200 py-2 px-3 text-sm outline-2 placeholder:text-gray-500"
             aria-describedby="nome-error"
           />
@@ -82,7 +83,8 @@ export default function EditAnimalForm({ animal, clients }: { animal: Animal, cl
             id="raca"
             name="raca"
             type="text"
-            defaultValue={animal.raca || ''}
+            defaultValue={state.data?.raca || animal.raca || ''}
+            placeholder="Digite a raça"
             className="block w-full rounded-md border border-gray-200 py-2 px-3 text-sm outline-2 placeholder:text-gray-500"
           />
         </div>
@@ -92,13 +94,16 @@ export default function EditAnimalForm({ animal, clients }: { animal: Animal, cl
           <label htmlFor="porte" className="mb-2 block text-sm font-medium">
             Porte
           </label>
-          <input
-            id="porte"
-            name="porte"
-            type="text"
-            defaultValue={animal.porte || ''}
-            className="block w-full rounded-md border border-gray-200 py-2 px-3 text-sm outline-2 placeholder:text-gray-500"
-          />
+            <select 
+              id="porte"
+              name="porte"
+              defaultValue={animal.porte || ''}
+              className="block w-full rounded-md border border-gray-200 py-2 px-3 text-sm outline-2 placeholder:text-gray-500"
+            >
+              <option value="pequeno">Pequeno</option>
+              <option value="medio">Médio</option>
+              <option value="grande">Grande</option>
+            </select>
         </div>
 
         {/* Status Vida */}
@@ -108,16 +113,16 @@ export default function EditAnimalForm({ animal, clients }: { animal: Animal, cl
           </label>
           <div className="flex gap-4">
             <label>
-              <input type="radio" name="status_vida" value="true" defaultChecked={animal.status_vida === true} />
+              <input type="radio" name="status_vida" value="true" checked={statusVida === true} onChange={() => setStatusVida(true)} />
               Vivo
             </label>
             <label>
-              <input type="radio" name="status_vida" value="false" defaultChecked={animal.status_vida === false} />
+              <input type="radio" name="status_vida" value="false" checked={statusVida === false} onChange={() => setStatusVida(false)} />
               Não-vivo
             </label>
           </div>
         </div>
-
+        
         {/* Client Search */}
         <div className="mb-4">
           <label htmlFor="cliente" className="mb-2 block text-sm font-medium">
@@ -148,7 +153,6 @@ export default function EditAnimalForm({ animal, clients }: { animal: Animal, cl
           <div className="mt-2 flex gap-2 flex-wrap">
             {selectedClients.map(client => (
               <div key={client.idClientes} className="flex items-center gap-2 bg-blue-100 rounded-full px-3 py-1 text-sm">
-                <input type="hidden" name="clienteIds" value={client.idClientes} />
                 <span>{client.nome}</span>
                 <button type="button" onClick={() => removeClient(client)} className="text-red-500 hover:text-red-700">
                   &times;
@@ -156,6 +160,7 @@ export default function EditAnimalForm({ animal, clients }: { animal: Animal, cl
               </div>
             ))}
           </div>
+          <input type="hidden" name="clienteIds" value={selectedClients.map(client => client.idClientes).join(',') || ''} />
           <div id="clienteIds-error" aria-live="polite" aria-atomic="true">
             {state.errors?.clienteIds &&
               state.errors.clienteIds.map((error: string) => (
@@ -179,8 +184,12 @@ export default function EditAnimalForm({ animal, clients }: { animal: Animal, cl
         >
           Cancelar
         </Link>
-        <button type="submit" className="flex h-10 items-center rounded-lg bg-blue-600 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-500">
-          Atualizar Animal
+        <button 
+            type="submit" 
+            className={`flex h-10 items-center rounded-lg bg-blue-600 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-500 ${pending ? 'bg-gray-400 cursor-not-allowed' : ''}`} 
+            disabled={pending || false}
+        >
+          {pending ? 'Atualizando...' : 'Atualizar Animal'}
         </button>
       </div>
     </form>

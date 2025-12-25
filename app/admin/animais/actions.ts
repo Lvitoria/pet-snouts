@@ -108,33 +108,42 @@ export async function createAnimal(prevState: State, formData: FormData) {
   redirect("/admin/animais");
 }
 
-const UpdateAnimal = AnimalSchema.omit({ id: true, clienteIds: true });
+const UpdateAnimal = AnimalSchema.omit({ id: true });
 
 export async function updateAnimal(id: number, prevState: State, formData: FormData) {
-  const validatedFields = UpdateAnimal.safeParse({
-    ...Object.fromEntries(formData.entries()),
-    status_vida: formData.get('status_vida') === 'true' ? true : false,
-  });
+  const processedData = processFormData(formData);
+  console.log('processedData', processedData);
+  const validatedFields = UpdateAnimal.safeParse(processedData);
 
   if (!validatedFields.success) {
     return {
       errors: validatedFields.error.flatten().fieldErrors,
       message: 'Erro de validação. Por favor, corrija os campos destacados.',
+      data: processedData
     };
   }
 
+  const { nome, raca, porte, status_vida, clienteIds } = validatedFields.data;
+  const clienteIdsArray = clienteIds ? clienteIds.split(',').map(Number) : [];
+  console.log('clienteIdsArray', clienteIdsArray);
   try {
     const response = await apiFetch(`/animais/${id}`, {
         method: "PATCH",
-        body: JSON.stringify(validatedFields.data),
+        body: JSON.stringify({ nome, raca, porte, status_vida, clienteIds: clienteIdsArray }),
     });
 
     if (!response.ok) {
         const errorData = await response.json().catch(() => ({ message: 'Falha ao atualizar animal.' }));
-        return { message: `Erro da API: ${errorData.message}` };
+        return { 
+          message: `Erro da API: ${errorData.message}`, 
+          data: processedData 
+        };
     }
   } catch (error) {
-    return { message: "Erro de rede: Não foi possível conectar ao servidor." };
+    return { 
+      message: "Erro de rede: Não foi possível conectar ao servidor.", 
+      data: processedData 
+    };
   }
 
   revalidatePath("/admin/animais");
