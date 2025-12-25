@@ -93,7 +93,8 @@ Authorization: Bearer {{token}}
 
 {
   "nome": "Cachorro Atualizado",
-  "porte": "Médio"
+  "porte": "Médio",
+  "clienteIds": [1]
 }
 
 ### Delete an animal by ID
@@ -130,7 +131,7 @@ Authorization: Bearer {{token}}
 
 ### Get a single tosa by ID
 # Note: Change the '1' to the ID of the tosa you want to fetch.
-GET {{baseUrl}}/tosas/1
+GET {{baseUrl}}/tosas/4
 Authorization: Bearer {{token}}
 
 ### Update a tosa by ID
