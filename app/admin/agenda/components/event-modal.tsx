@@ -41,13 +41,6 @@ export default function EventModal({ event, onClose }: EventModalProps) {
         </div>
 
         <div className="mt-6 flex justify-end space-x-4">
-            <Link 
-                href={`/admin/tosas/${tosa.id}/edit`} 
-                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
-                onClick={(e) => e.stopPropagation()} // Impede que o clique no link feche o modal
-            >
-                Editar
-            </Link>
             <button 
                 onClick={onClose} 
                 className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition-colors"

@@ -119,7 +119,7 @@ export async function createTosa(prevState: State, formData: FormData) {
 
 const UpdateTosa = TosaSchema.omit({ idTosas: true });
 
-export async function updateTosa(idTosas: number, prevState: State, formData: FormData) {
+export async function updateTosa(prevState: State, formData: FormData) {
   const id = Number(formData.get('idTosas'));
 
   if (isNaN(id)) {

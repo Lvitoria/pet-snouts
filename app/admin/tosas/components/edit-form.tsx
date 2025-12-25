@@ -1,13 +1,27 @@
 'use client';
 
 import Link from 'next/link';
-import { useActionState } from 'react';
+import { useActionState, useEffect, useState } from 'react';
 import { updateTosa, type State } from '../actions';
 
-type AnimalComTutor = {
-  id: number; // Animais_tem_clientes_id_animais_tem_clientes
-  animalNome: string;
-  tutorNome: string;
+type Animal = {
+  idAnimais: number;
+  nome: string;
+  raca: string;
+  porte: string;
+  status_vida: boolean;
+  Animais_tem_clientes: {
+    id_animais_tem_clientes: number;
+    Animais_idAnimais: number;
+    clientes_idClientes: number;
+    clientes: {
+      idClientes: number;
+      nome: string;
+      documento: string;
+      data_nasc: string;
+      Usuarios_internos_idUsuarios_internos: number;
+    };
+  }[];
 };
 
 type Tosa = {
@@ -27,8 +41,25 @@ const formatDateTimeForInput = (isoString: string) => {
 
 export default function EditTosaForm({ tosa, animais }: { tosa: Tosa, animais: Animal[] }) {
   const initialState: State = { message: null, errors: {}, data: null };
-  const updateTosaWithId = updateTosa.bind(null, tosa.idTosas);
-  const [state, dispatch, pending] = useActionState<State, FormData>(updateTosaWithId, initialState);
+  const [state, dispatch, pending] = useActionState<State, FormData>(updateTosa, initialState);
+
+  const opcoesAnimais = animais.flatMap((animal) =>
+    animal.Animais_tem_clientes.map((relacao) => ({
+      id: relacao.id_animais_tem_clientes,
+      nomeAnimal: animal.nome,
+      nomeTutor: relacao.clientes.nome,
+    }))
+  );
+
+  const [valorSelecionado, setValorSelecionado] = useState(
+    String(tosa.Animais_tem_clientes_id_animais_tem_clientes)
+  );
+
+  useEffect(() => {
+    if (state.data?.Animais_tem_clientes_id_animais_tem_clientes) {
+      setValorSelecionado(String(state.data.Animais_tem_clientes_id_animais_tem_clientes));
+    }
+  }, [state.data]);
 
   return (
     <form action={dispatch}>
@@ -40,15 +71,17 @@ export default function EditTosaForm({ tosa, animais }: { tosa: Tosa, animais: A
           </label>
           <select
             id="Animais_tem_clientes_id_animais_tem_clientes"
-            name="Animais_tem_clientes_id_animais_tem_clientes"
-            className="block w-full rounded-md border border-gray-200 py-2 px-3 text-sm outline-2 placeholder:text-gray-500"
-            defaultValue={tosa.Animais_tem_clientes_id_animais_tem_clientes}
+            className="block w-full rounded-md border border-gray-200 py-2 px-3 text-sm outline-2 cursor-not-allowed bg-gray-900 text-white"
+            value={valorSelecionado}
+            onChange={(e) => setValorSelecionado(e.target.value)}
             aria-describedby="animal-error"
+            required
+            disabled={true}
           >
             <option value="" disabled>Selecione um animal</option>
-            {animais.map((item) => (
-              <option key={item.idAnimais} value={item.idAnimais}>
-                {item.nome}
+            {opcoesAnimais.map((item) => (
+              <option key={item.id} value={String(item.id)}>
+                {item.nomeAnimal} - {item.nomeTutor}
               </option>
             ))}
           </select>
@@ -61,6 +94,8 @@ export default function EditTosaForm({ tosa, animais }: { tosa: Tosa, animais: A
               ))}
           </div>
         </div>
+
+        <input type="hidden" name="Animais_tem_clientes_id_animais_tem_clientes" value={tosa.Animais_tem_clientes_id_animais_tem_clientes} />
 
         {/* Atividade */}
         <div className="mb-4">
@@ -146,6 +181,8 @@ export default function EditTosaForm({ tosa, animais }: { tosa: Tosa, animais: A
             className="block w-full rounded-md border border-gray-200 py-2 px-3 text-sm outline-2 placeholder:text-gray-500"
           />
         </div>
+
+        <input type="hidden" name="idTosas" value={tosa.idTosas} />
 
         <div aria-live="polite" aria-atomic="true">
           {state.message ? (
