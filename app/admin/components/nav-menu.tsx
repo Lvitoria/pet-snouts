@@ -31,6 +31,14 @@ function AnimalsIcon() {
   );
 }
 
+function ProductsIcon() {
+  return (
+    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-14L4 7m0 0v10l8 4m0-14L4 7"></path>
+    </svg>
+  );
+}
+
 function CalendarIcon() {
   return (
     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -60,7 +68,8 @@ const menuItems = [
   { name: 'Clientes', href: '/admin/clientes', icon: ClientsIcon },
   { name: 'Animais', href: '/admin/animais', icon: AnimalsIcon },
   { name: 'Agenda', href: '/admin/agenda', icon: CalendarIcon },
-  { name: 'Agendamentos', href: '/admin/tosas', icon: ListIcon }
+  { name: 'Agendamentos', href: '/admin/tosas', icon: ListIcon },
+  { name: 'Produtos', href: '/admin/produtos', icon: ProductsIcon }
   // Adicione mais itens de menu aqui
 ];
 
