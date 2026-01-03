@@ -285,12 +285,12 @@ Authorization: Bearer {{token}}
 
 ### Get a single pagamento by ID
 # Note: Change the '1' to the ID of the pagamento you want to fetch.
-GET {{baseUrl}}/pagamentos/1
+GET {{baseUrl}}/pagamentos/2
 Authorization: Bearer {{token}}
 
 ### Update a pagamento by ID
 # Note: Change the '1' and adjust the body as needed.
-PATCH {{baseUrl}}/pagamentos/1
+PATCH {{baseUrl}}/pagamentos/2
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
