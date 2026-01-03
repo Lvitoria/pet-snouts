@@ -5,7 +5,7 @@ import DeleteFormButton from "../../components/DeleteFormButton";
 import ListTable from '../../components/ListTable';
 
 type Product = {
-  idProduto: number;
+  idProduto : number;
   nome_produto: string;
   cod_barras: string | null;
   quantidade: number | null;
@@ -23,6 +23,7 @@ export default async function ProdutosTable() {
     <ListTable createUrl="/admin/produtos/new" labelNew="Adicionar Produto" title="Produtos">
       <thead className="rounded-md bg-gray-50 text-left text-sm font-normal">
         <tr>
+          <th scope="col" className="px-4 py-5 font-medium sm:pl-6">ID</th>
           <th scope="col" className="px-3 py-5 font-medium">Nome</th>
           <th scope="col" className="px-3 py-5 font-medium">Tipo</th>
           <th scope="col" className="px-3 py-5 font-medium">Preço</th>
@@ -33,25 +34,28 @@ export default async function ProdutosTable() {
           </th>
         </tr>
       </thead>
-      <tbody className="divide-y divide-gray-200 text-gray-900">
+      <tbody className="divide-y divide-gray-200 text-gray-900 md:divide-none">
         {products.map((product) => (
-          <tr key={product.idProduto} className="group">            
-            <td className="whitespace-nowrap bg-white px-3 py-5 text-sm">
+          <tr key={product.idProduto} className="group w-full">
+            <td data-label="ID" className="whitespace-nowrap bg-white py-5 pl-4 pr-3 text-sm text-black group-first-of-type:rounded-md group-last-of-type:rounded-md sm:pl-6 md:bg-transparent md:p-2">
+              {product.idProduto}
+            </td>
+            <td data-label="Nome" className="whitespace-nowrap bg-white px-3 py-5 text-sm md:bg-transparent md:p-2">
               {product.nome_produto}
             </td>
-            <td className="whitespace-nowrap bg-white px-3 py-5 text-sm">
+            <td data-label="Tipo" className="whitespace-nowrap bg-white px-3 py-5 text-sm md:bg-transparent md:p-2">
               {product.Tipo_produto?.nome || '-'}
             </td>
-            <td className="whitespace-nowrap bg-white px-3 py-5 text-sm">
+            <td data-label="Preço" className="whitespace-nowrap bg-white px-3 py-5 text-sm md:bg-transparent md:p-2">
               {product.preco ? `R$ ${Number(product.preco).toFixed(2)}` : '-'}
             </td>
-            <td className="whitespace-nowrap bg-white px-3 py-5 text-sm">
+            <td data-label="Quantidade" className="whitespace-nowrap bg-white px-3 py-5 text-sm md:bg-transparent md:p-2">
               {`${product.quantidade || '0'} ${product.unidade_medida || ''}`}
             </td>
-            <td className="whitespace-nowrap bg-white px-3 py-5 text-sm">
+            <td data-label="Cód. Barras" className="whitespace-nowrap bg-white px-3 py-5 text-sm md:bg-transparent md:p-2">
               {product.cod_barras || '-'}
             </td>
-            <td className="whitespace-nowrap bg-white py-3 pl-6 pr-3">
+            <td className="whitespace-nowrap bg-white py-3 pl-6 pr-3 md:bg-transparent md:p-2">
               <div className="flex justify-end gap-3">
                 <Link
                   href={`/admin/produtos/${product.idProduto}/edit`}

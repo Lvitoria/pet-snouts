@@ -35,22 +35,22 @@ export default async function ClientesTable() {
           </th>
         </tr>
       </thead>
-      <tbody className="divide-y divide-gray-200 text-gray-900">
+      <tbody className="divide-y divide-gray-200 text-gray-900 md:divide-none">
         {clients.map((client) => (
-          <tr key={client.idClientes} className="group">
-            <td className="whitespace-nowrap bg-white py-5 pl-4 pr-3 text-sm text-black group-first-of-type:rounded-md group-last-of-type:rounded-md sm:pl-6">
+          <tr key={client.idClientes} className="group w-full">
+            <td data-label="ID" className="whitespace-nowrap bg-white py-5 pl-4 pr-3 text-sm text-black group-first-of-type:rounded-md group-last-of-type:rounded-md sm:pl-6 md:bg-transparent md:p-2">
               {client.idClientes}
             </td>
-            <td className="whitespace-nowrap bg-white px-3 py-5 text-sm">
+            <td data-label="Nome" className="whitespace-nowrap bg-white px-3 py-5 text-sm md:bg-transparent md:p-2">
               {client.nome}
             </td>
-            <td className="whitespace-nowrap bg-white px-3 py-5 text-sm">
+            <td data-label="Documento" className="whitespace-nowrap bg-white px-3 py-5 text-sm md:bg-transparent md:p-2">
               {client.documento || '-'}
             </td>
-            <td className="whitespace-nowrap bg-white px-3 py-5 text-sm">
+            <td data-label="Data de Nascimento" className="whitespace-nowrap bg-white px-3 py-5 text-sm md:bg-transparent md:p-2">
               {client.data_nasc ? new Date(client.data_nasc).toLocaleDateString('pt-BR') : '-'}
             </td>
-            <td className="whitespace-nowrap bg-white py-3 pl-6 pr-3">
+            <td className="whitespace-nowrap bg-white py-3 pl-6 pr-3 md:bg-transparent md:p-2">
               <div className="flex justify-end gap-3">
                 <Link
                   href={`/admin/clientes/${client.idClientes}/edit`}

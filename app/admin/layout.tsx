@@ -9,7 +9,7 @@ export default function AdminLayout({
     <div className="min-h-screen bg-gray-100">
       <div className="md:flex min-h-screen">
         <NavMenu />
-        <main className="flex-grow p-8">
+        <main className="flex-grow p-8 min-w-0">
           {children}
         </main>
       </div>

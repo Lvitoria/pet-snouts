@@ -18,13 +18,11 @@ export default async function ListTable(
         </Link>
       </div>
       <div className="mt-6 flow-root">
-        <div className="overflow-x-auto">
-          <div className="inline-block min-w-full align-middle">
-            <div className="overflow-hidden rounded-md bg-gray-50 p-2 md:pt-0">
-              <table className="min-w-full rounded-md text-gray-900 md:table">
-                {children}
-              </table>
-            </div>
+        <div className="inline-block min-w-full align-middle">
+          <div className="rounded-lg bg-gray-50 p-2 md:pt-0">
+            <table className="responsive-table min-w-full text-gray-900 md:table">
+              {children}
+            </table>
           </div>
         </div>
       </div>
