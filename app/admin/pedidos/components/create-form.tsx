@@ -34,6 +34,9 @@ export default function CreatePedidoForm() {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [total, setTotal] = useState(0);
 
+  const paymentMethods = ["Cartão de Crédito", "Cartão de Débito", "Dinheiro", "PIX"];
+  const paymentStatus = ["pago", "pendente", "cancelado", "estornado"];
+
   useEffect(() => {
     async function loadData() {
       const [productsData, clientesData] = await Promise.all([getProducts(), getClients()]);
@@ -106,7 +109,7 @@ export default function CreatePedidoForm() {
             name="clientes_idClientes"
             className="block w-full rounded-md border border-gray-200 py-2 px-3 text-sm"
             aria-describedby="clientes_idClientes-error"
-            defaultValue=""
+            defaultValue={state.data?.clientes_idClientes || ""}
           >
             <option value="" disabled>Selecione um cliente</option>
             {clientes.map(cliente => (
@@ -115,6 +118,45 @@ export default function CreatePedidoForm() {
           </select>
           <div id="clientes_idClientes-error" aria-live="polite" aria-atomic="true">
             {state.errors?.clientes_idClientes?.map((error: string) => <p className="mt-2 text-sm text-red-500" key={error}>{error}</p>)}
+          </div>
+        </div>
+
+        {/* Método de Pagamento */}
+        <div className="mb-4">
+          <label htmlFor="metodo_pgto" className="mb-2 block text-sm font-medium">Método de Pagamento</label>
+          <select
+            id="metodo_pgto"
+            name="metodo_pgto"
+            className="block w-full rounded-md border border-gray-200 py-2 px-3 text-sm"
+            aria-describedby="metodo_pgto-error"
+            defaultValue={state.data?.metodo_pgto || "Dinheiro"}
+          >
+            <option value="" disabled>Selecione um método</option>
+            {paymentMethods.map(method => (
+              <option key={method} value={method}>{method}</option>
+            ))}
+          </select>
+          <div id="metodo_pgto-error" aria-live="polite" aria-atomic="true">
+            {state.errors?.metodo_pgto?.map((error: string) => <p className="mt-2 text-sm text-red-500" key={error}>{error}</p>)}
+          </div>
+        </div>
+
+        {/* Status */}
+        <div className="mb-4">
+          <label htmlFor="status" className="mb-2 block text-sm font-medium">Status</label>
+          <select
+            id="status"
+            name="status"
+            className="block w-full rounded-md border border-gray-200 py-2 px-3 text-sm"
+            aria-describedby="status-error"
+            defaultValue={state.data?.status || "pendente"}
+          >
+            {paymentStatus.map(status => (
+              <option key={status} value={status}>{status}</option>
+            ))}
+          </select>
+          <div id="status-error" aria-live="polite" aria-atomic="true">
+            {state.errors?.status?.map((error: string) => <p className="mt-2 text-sm text-red-500" key={error}>{error}</p>)}
           </div>
         </div>
 
